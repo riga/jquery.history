@@ -29,7 +29,7 @@ jQuery.History = function() {
 			};
 			_data = jQuery.extend( true, defaultData, _data );
 		}
-		var key = self.size();
+		var key = size();
 		window.history.pushState( key, '', encodeURI( _data.url ) );
 		_history.data[ key ] = _data;
 		_data.callbacks.fire( _data );
@@ -37,7 +37,7 @@ jQuery.History = function() {
 	},
 	
 	modify = function( /*Object*/ _data ) {
-		jQuery.extend( true, self.data(), _data );
+		jQuery.extend( true, data(), _data );
 		return self;
 	},
 	
