@@ -76,7 +76,7 @@ jQuery.History = function() {
 	};
 	
 	var handle = function( event ) {
-		if ( !event || !event.originalEvent ) {
+		if ( !event || !event.originalEvent || !event.originalEvent.state ) {
 			return;
 		}
 		var key = event.originalEvent.state;
