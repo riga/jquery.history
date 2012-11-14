@@ -1,5 +1,5 @@
 /*!
- * jQuery History Plugin v0.1
+ * jQuery History Plugin v0.2
  * https://github.com/riga/jquery.history
  *
  * Copyright 2012, Marcel Rieger
@@ -10,10 +10,20 @@
 
 var _history = {
 	instance: null,
-	data: {}
+	callbacks: jQuery.Callbacks()
 };
 
-jQuery.History = function() {
+jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ append ) {
+	
+	if ( callback ) {
+		append = append === undefined ? true : append;
+		callback = callback || function(){};
+		if ( append ) {
+			_history.callbacks.add( callback.fire || callback );
+		} else {
+			_history.callbacks = callback.fire ? callback : jQuery.Callbacks().add( callback );
+		}
+	}
 	
 	if ( _history.instance ) {
 		return _history.instance;
@@ -21,23 +31,21 @@ jQuery.History = function() {
 	
 	var self,
 	
-	push = function( /*String*/ url, /*jQuery.Callbacks*/ callbacks, /*Object*/ _data ) {
+	push = function( /*String*/ url, /*Object*/ _data ) {
 		if ( !jQuery.isPlainObject( url ) ) {
-			var defaultData = {
-				url: url || '',
-				callbacks: (callbacks && callbacks.fire) ? callbacks : jQuery.Callbacks().add( callbacks )
-			};
-			_data = jQuery.extend( true, defaultData, _data );
+			url = jQuery.extend( true, { url: url }, _data );
 		}
-		var key = size();
-		window.history.pushState( key, '', encodeURI( _data.url ) );
-		_history.data[ key ] = _data;
-		_data.callbacks.fire( _data );
+		_data = url;
+		window.history.pushState( _data, '', encodeURI( _data.url ) );
+		callbacks().fire( _data );
 		return self;
 	},
 	
-	modify = function( /*Object*/ _data ) {
-		jQuery.extend( true, data(), _data );
+	modify = function( /*Object*/ _data, /*Boolean*/ extend ) {
+		if ( extend === undefined || extend ) {
+			_data = jQuery.extend( true, data(), _data );
+		}
+		window.history.replaceState( _data );
 		return self;
 	},
 	
@@ -57,12 +65,15 @@ jQuery.History = function() {
 	},
 	
 	data = function() {
-		var key = window.history.state;
-		return _history.data[ key ];
+		return window.history.state;
 	},
 	
 	size = function() {
 		return window.history.length;
+	},
+	
+	callbacks = function() {
+		return _history.callbacks;
 	};
 	
 	self = {
@@ -72,18 +83,15 @@ jQuery.History = function() {
 		back: back,
 		go: go,
 		data: data,
-		size: size
+		size: size,
+		callbacks: callbacks
 	};
 	
 	var handle = function( event ) {
 		if ( !event || !event.originalEvent || !event.originalEvent.state ) {
 			return;
 		}
-		var key = event.originalEvent.state;
-		var _data = _history.data[ key ];
-		if ( _data && _data.callbacks && _data.callbacks.fire ) {
-			_data.callbacks.fire( _data );
-		}
+		callbacks().fire( event.originalEvent.state );
 	};
 	
 	$(window).bind( "popstate", handle );
