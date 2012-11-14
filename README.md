@@ -1,4 +1,4 @@
-jquery.History
+jquery.history
 ==============
 
 Todo
