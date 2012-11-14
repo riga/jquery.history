@@ -1,4 +1,4 @@
-/*
+/*!
  * jQuery History Plugin v0.1
  * https://github.com/riga/jquery.History
  *
