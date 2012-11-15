@@ -35,7 +35,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		}
 		_state = url;
 		window.history.pushState( _state, '', encodeURI( _state.url ) );
-		callbacks().fire( _state );
+		_callbacks().fire( _state );
 		return self;
 	},
 	
@@ -70,18 +70,18 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		return window.history.length;
 	},
 	
-	callbacks = function() {
+	_callbacks = function() {
 		return _history.callbacks;
 	},
 	
-	handle = function( event ) {
+	_handle = function( event ) {
 		if ( !event || !event.originalEvent || !event.originalEvent.state ) {
 			return;
 		}
-		callbacks().fire( event.originalEvent.state );
+		_callbacks().fire( event.originalEvent.state );
 	};
 	
-	$(window).on( "popstate", handle );
+	$(window).on( "popstate", _handle );
 	
 	self = {
 		push: push,
@@ -90,8 +90,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		back: back,
 		go: go,
 		state: state,
-		size: size,
-		callbacks: callbacks
+		size: size
 	};
 	
 	return _history.instance = self;
