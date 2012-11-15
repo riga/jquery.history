@@ -16,7 +16,7 @@ var _history = {
 jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ append ) {
 	
 	if ( callback && (callback.fire || jQuery.isFunction( callback )) ) {
-		if ( append === undefined || append ) {
+		if ( append || append === undefined ) {
 			_history.callbacks.add( callback.fire || callback );
 		} else {
 			_history.callbacks = callback.fire ? callback : jQuery.Callbacks().add( callback );
