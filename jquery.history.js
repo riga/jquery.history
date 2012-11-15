@@ -40,7 +40,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 	},
 	
 	modify = function( /*Object*/ _state, /*Boolean*/ extend ) {
-		if ( extend === undefined || extend ) {
+		if ( extend || extend === undefined ) {
 			_state = jQuery.extend( true, state(), _state );
 		}
 		window.history.replaceState( _state );
