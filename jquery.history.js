@@ -15,9 +15,8 @@ var _history = {
 
 jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ append ) {
 	
-	if ( callback ) {
+	if ( callback && (callback.fire || jQuery.isFunction( callback )) ) {
 		append = append === undefined ? true : append;
-		callback = callback || function(){};
 		if ( append ) {
 			_history.callbacks.add( callback.fire || callback );
 		} else {
@@ -31,21 +30,21 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 	
 	var self,
 	
-	push = function( /*String*/ url, /*Object*/ _data ) {
+	push = function( /*String*/ url, /*Object*/ _state ) {
 		if ( !jQuery.isPlainObject( url ) ) {
-			url = jQuery.extend( true, { url: url }, _data );
+			url = jQuery.extend( true, { url: url }, _state );
 		}
-		_data = url;
-		window.history.pushState( _data, '', encodeURI( _data.url ) );
-		callbacks().fire( _data );
+		_state = url;
+		window.history.pushState( _state, '', encodeURI( _state.url ) );
+		callbacks().fire( _state );
 		return self;
 	},
 	
-	modify = function( /*Object*/ _data, /*Boolean*/ extend ) {
+	modify = function( /*Object*/ _state, /*Boolean*/ extend ) {
 		if ( extend === undefined || extend ) {
-			_data = jQuery.extend( true, data(), _data );
+			_state = jQuery.extend( true, state(), _state );
 		}
-		window.history.replaceState( _data );
+		window.history.replaceState( _state );
 		return self;
 	},
 	
@@ -64,7 +63,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		return self;
 	},
 	
-	data = function() {
+	state = function() {
 		return window.history.state;
 	},
 	
@@ -82,7 +81,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		forward: forward,
 		back: back,
 		go: go,
-		data: data,
+		state: state,
 		size: size,
 		callbacks: callbacks
 	};
