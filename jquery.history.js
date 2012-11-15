@@ -72,7 +72,16 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 	
 	callbacks = function() {
 		return _history.callbacks;
+	},
+	
+	handle = function( event ) {
+		if ( !event || !event.originalEvent || !event.originalEvent.state ) {
+			return;
+		}
+		callbacks().fire( event.originalEvent.state );
 	};
+	
+	$(window).on( "popstate", handle );
 	
 	self = {
 		push: push,
@@ -84,15 +93,6 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		size: size,
 		callbacks: callbacks
 	};
-	
-	var handle = function( event ) {
-		if ( !event || !event.originalEvent || !event.originalEvent.state ) {
-			return;
-		}
-		callbacks().fire( event.originalEvent.state );
-	};
-	
-	$(window).on( "popstate", handle );
 	
 	return _history.instance = self;
 };
