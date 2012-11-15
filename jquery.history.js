@@ -93,7 +93,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		callbacks().fire( event.originalEvent.state );
 	};
 	
-	$(window).bind( "popstate", handle );
+	$(window).on( "popstate", handle );
 	
 	return _history.instance = self;
 };
