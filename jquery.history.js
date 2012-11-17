@@ -13,7 +13,7 @@ var _history = {
 	callbacks: jQuery.Callbacks()
 };
 
-jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ append ) {
+jQuery.History = function( callback, append ) {
 	
 	if ( callback && (callback.fire || jQuery.isFunction( callback )) ) {
 		if ( append || append === undefined ) {
@@ -29,7 +29,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 	
 	var self,
 	
-	push = function( /*String*/ url, /*Object*/ _state ) {
+	push = function( url, _state ) {
 		if ( !jQuery.isPlainObject( url ) ) {
 			url = jQuery.extend( true, { url: url }, _state );
 		}
@@ -39,7 +39,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		return self;
 	},
 	
-	modify = function( /*Object*/ _state, /*Boolean*/ extend ) {
+	modify = function( _state, extend ) {
 		if ( extend || extend === undefined ) {
 			_state = jQuery.extend( true, state(), _state );
 		}
@@ -57,7 +57,7 @@ jQuery.History = function( /*Function|jQuery.Callbacks*/ callback, /*Boolean*/ a
 		return self;
 	},
 	
-	go = function( /*Integer*/ position ) {
+	go = function( position ) {
 		window.history.go( position );
 		return self;
 	},
