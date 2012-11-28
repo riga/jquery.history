@@ -39,11 +39,14 @@ jQuery.History = function( callback, append ) {
 		return self;
 	},
 	
-	modify = function( _state, extend ) {
+	modify = function( _state, extend, fire ) {
 		if ( extend || extend === undefined ) {
 			_state = jQuery.extend( true, state(), _state );
 		}
 		window.history.replaceState( _state );
+		if ( fire ) {
+			_callbacks().fire( _state );
+		}
 		return self;
 	},
 	
