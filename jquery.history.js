@@ -1,8 +1,8 @@
 /*!
- * jQuery History Plugin v0.2
+ * jQuery History Plugin v0.3
  * https://github.com/riga/jquery.history
  *
- * Copyright 2012, Marcel Rieger
+ * Copyright 2013, Marcel Rieger
  * Dual licensed under the MIT or GPL Version 3 licenses.
  * http://www.opensource.org/licenses/mit-license
  * http://www.opensource.org/licenses/GPL-3.0
@@ -28,6 +28,8 @@ jQuery.History = function(callback, append) {
     }
 
     var self,
+
+    _enabled = true,
 
     push = function(url, _state) {
         if(!jQuery.isPlainObject(url)) {
@@ -75,13 +77,27 @@ jQuery.History = function(callback, append) {
         return window.history.length;
     },
 
+    enable = function() {
+        _enabled = true;
+        return self;
+    },
+
+    disable = function() {
+        _enabled = false;
+        return self;
+    },
+
+    enabled = function() {
+        return _enabled;
+    },
+
     fired = function() {
-        return _history.callbacks.fired();
+        return _callbacks().fired();
     },
 
     promise = function() {
         var dfd = jQuery.Deferred();
-        _history.callbacks.add(dfd.resolve);
+        _callbacks().add(dfd.resolve);
         return dfd.promise();
     },
 
@@ -90,13 +106,18 @@ jQuery.History = function(callback, append) {
     },
 
     _handle = function(event) {
-        if(!event || !event.originalEvent) {
+        if(!enabled() || !event || !event.originalEvent) {
             return;
         }
         _callbacks().fire(event.originalEvent.state);
     };
 
-    $(window).on('popstate', _handle);
+    // workaround
+    $(window).load(function() {
+        window.setTimeout(function() {
+            $(window).on('popstate', _handle);
+        }, 0);
+    });
 
     self = {
         push: push,
@@ -106,8 +127,11 @@ jQuery.History = function(callback, append) {
         go: go,
         state: state,
         size: size,
-        promise: promise,
-        fired: fired
+        enable: enable,
+        disable: disable,
+        enabled: enabled,
+        fired: fired,
+        promise: promise
     };
 
     return _history.instance = self;
