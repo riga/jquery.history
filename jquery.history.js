@@ -75,6 +75,16 @@ jQuery.History = function(callback, append) {
         return window.history.length;
     },
 
+    fired = function() {
+        return _history.callbacks.fired();
+    },
+
+    promise = function() {
+        var dfd = jQuery.Deferred();
+        _history.callbacks.add(dfd.resolve);
+        return dfd.promise();
+    },
+
     _callbacks = function() {
         return _history.callbacks;
     },
@@ -86,7 +96,7 @@ jQuery.History = function(callback, append) {
         _callbacks().fire(event.originalEvent.state);
     };
 
-    $(window).on("popstate", _handle);
+    $(window).on('popstate', _handle);
 
     self = {
         push: push,
@@ -95,7 +105,9 @@ jQuery.History = function(callback, append) {
         back: back,
         go: go,
         state: state,
-        size: size
+        size: size,
+        promise: promise,
+        fired: fired
     };
 
     return _history.instance = self;
