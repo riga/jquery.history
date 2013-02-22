@@ -31,7 +31,7 @@ jQuery.History = function(callback, append) {
 
     _enabled = true,
 
-    push = function(url, _state) {
+    push = function(url, _state, fire) {
         if(!jQuery.isPlainObject(url)) {
             url = jQuery.extend(true, {
                 url: url
@@ -39,7 +39,9 @@ jQuery.History = function(callback, append) {
         }
         _state = url;
         window.history.pushState(_state, '', encodeURI(_state.url));
-        _callbacks().fire(_state);
+        if(fire) {
+            _callbacks().fire(_state);
+        }
         return self;
     },
 
